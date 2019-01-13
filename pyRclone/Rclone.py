@@ -164,7 +164,7 @@ class Rclone:
         """
         return self.command("lsjson", [remote] + list(flags))
 
-    def ls( # pylint: disable=C0103
+    def ls(  # pylint: disable=C0103
         self, remote: str, flags: Iterable[str] = tuple()
     ) -> RcloneOutput:
         """ls

@@ -64,4 +64,5 @@ class RCloneRemoteOptions:
 
     A simple data class to store option values about a remote.
     """
+
     remote_type: str
