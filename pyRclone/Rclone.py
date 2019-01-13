@@ -118,6 +118,10 @@ class Rclone:
         This will add on the associated rclone parts (ie, "rclone", "--conf XXXX")
         """
 
+        if self.dry_run_mode and "--dry-run" not in arguments:
+            self.logger.warning("Attempted to run non-trial command in dry-run mode.")
+            return RcloneOutput(RcloneError.PYTHON_EXCEPTION, [""], [""])
+
         full_command: List[str] = ["rclone", command]
         full_command += arguments
 
