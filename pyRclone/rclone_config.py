@@ -1,3 +1,9 @@
+# pylint: disable=too-few-public-methods
+"""rclone_config
+
+Classes to parse, load and store the configuration settings for rclone from
+a given location.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -7,6 +13,11 @@ from typing import List
 
 
 class RcloneConfig:
+    """RcloneConfig
+
+    A class to parse and store a given Rclone configuration file.
+    """
+
     def __init__(self, config_string: str, filePath: bool = False) -> None:
         self._config_values: ConfigParser = ConfigParser(allow_no_value=True)
 
@@ -24,12 +35,22 @@ class RcloneConfig:
 
     @staticmethod
     def get_default_config() -> RcloneConfig:
+        """get_default_config
+
+        Find and return the default Rclone config.
+        """
+
         default_config_location: str = path.expanduser("~/.config/rclone/rclone.conf")
 
         return RcloneConfig(default_config_location, True)
 
 
 class RCloneRemote:
+    """RcloneRemote
+
+    A class to store a given Rclone remote and its specific options.
+    """
+
     def __init__(self, remote_name: str, config_file: ConfigParser):
         self.name: str = remote_name
         self.options: RCloneRemoteOptions = RCloneRemoteOptions(
@@ -39,4 +60,8 @@ class RCloneRemote:
 
 @dataclass
 class RCloneRemoteOptions:
+    """RCloneRemoteOptions
+
+    A simple data class to store option values about a remote.
+    """
     remote_type: str

@@ -1,7 +1,8 @@
-from pyRclone import Rclone
+# pylint: disable=all
+from pyrclone import Rclone
 
 DEBUG_PARSER: Rclone = Rclone()
-COMMAND_TO_RUN = ["rclone", "lsd", "drive:"]
-TEST_OUTPUT = DEBUG_PARSER._execute(COMMAND_TO_RUN)
+REMOTES = DEBUG_PARSER.listremotes()
+TEST_OUTPUT = DEBUG_PARSER.lsl("dropbox:Photos")
 
 print(TEST_OUTPUT)

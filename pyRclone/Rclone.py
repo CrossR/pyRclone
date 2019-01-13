@@ -1,13 +1,24 @@
+"""rclone
+
+A typed interface for interactions with an RClone executable.
+"""
+
 import logging
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import Iterable, List, Optional, Tuple
 
-from .RcloneConfig import RcloneConfig
+from .rclone_config import RcloneConfig
 
 
 class RcloneError(Enum):
+    """RcloneError
+
+    An enum wrapping the errors that Rclone can raise, and some
+    interface specific ones.
+    """
+
     RCLONE_MISSING = -1
     PYTHON_EXCEPTION = -2
     SUCCESS = 0
@@ -23,6 +34,11 @@ class RcloneError(Enum):
 
 @dataclass
 class RcloneOutput:
+    """RcloneOutput
+
+    A wrapper for the Rclone command outputs, to ease access.
+    """
+
     return_code: RcloneError
     output: List[str]
     error: List[str]
@@ -91,14 +107,16 @@ class Rclone:
                     output.splitlines(),
                     error.splitlines(),
                 )
-        except FileNotFoundError as e:
-            self.logger.exception(f"Can't find rclone executable. {e}")
+        except FileNotFoundError as file_missing:
+            self.logger.exception(f"Can't find rclone executable. {file_missing}")
             return RcloneOutput(RcloneError.RCLONE_MISSING, [""], [""])
-        except Exception as e:
-            self.logger.exception(f"Exception running {command_to_run}. Exception: {e}")
+        except Exception as exception:
+            self.logger.exception(
+                f"Exception running {command_to_run}. Exception: {exception}"
+            )
             return RcloneOutput(RcloneError.PYTHON_EXCEPTION, [""], [""])
 
-    def command(self, command: str, arguments: List[str] = []) -> RcloneOutput:
+    def command(self, command: str, arguments: Iterable[str] = tuple()) -> RcloneOutput:
         """command
 
         Run a given command in the correct mode.
@@ -107,10 +125,12 @@ class Rclone:
 
         if self.dry_run_mode:
             return self.dry_run_command(command, arguments)
-        else:
-            return self.run_command(command, arguments)
 
-    def run_command(self, command: str, arguments: List[str] = []) -> RcloneOutput:
+        return self.run_command(command, arguments)
+
+    def run_command(
+        self, command: str, arguments: Iterable[str] = tuple()
+    ) -> RcloneOutput:
         """run_command
 
         Run a given command.
@@ -127,40 +147,43 @@ class Rclone:
 
         return self._execute(full_command)
 
-    def dry_run_command(self, command: str, arguments: List[str] = []) -> RcloneOutput:
+    def dry_run_command(
+        self, command: str, arguments: Iterable[str] = tuple()
+    ) -> RcloneOutput:
         """dry_run_command
 
         Run a given command in dry run mode, ie a trial mode with no actual changes.
         """
 
-        return self.command(command, ["--dry-run"] + arguments)
+        return self.command(command, ["--dry-run"] + list(arguments))
 
-    def lsjson(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def lsjson(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """lsjson
 
         Wrap the rclone lsjson command.
         """
-        return self.command("lsjson", [remote] + flags)
+        return self.command("lsjson", [remote] + list(flags))
 
-    def ls(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def ls( # pylint: disable=C0103
+        self, remote: str, flags: Iterable[str] = tuple()
+    ) -> RcloneOutput:
         """ls
 
         Wrap the rclone ls command.
         """
 
         if self.json_by_default:
-            return self.lsjson(remote, ["-R"] + flags)
-        else:
-            return self.command("ls", [remote] + flags)
+            return self.lsjson(remote, ["-R"] + list(flags))
 
-    def _filterJson(
-        self, command_output: RcloneOutput, onlyFolders: bool
-    ) -> RcloneOutput:
-        """_filterJson
+        return self.command("ls", [remote] + list(flags))
+
+    @staticmethod
+    def _filter_json(command_output: RcloneOutput, only_folders: bool) -> RcloneOutput:
+        """_filter_json
 
         Helper to remove either files or folders from a given output.
 
-        If onlyFolders is set, then only folders are kept.
+        If only_folders is set, then only folders are kept.
         Otherwise, only files are kept.
         """
 
@@ -168,9 +191,9 @@ class Rclone:
 
         output_line: str
         for output_line in command_output.output:
-            if onlyFolders and '"IsDir":false' in output_line:
+            if only_folders and '"IsDir":false' in output_line:
                 continue
-            elif not onlyFolders and '"IsDir":true' in output_line:
+            elif not only_folders and '"IsDir":true' in output_line:
                 continue
             else:
                 filtered_output.append(output_line)
@@ -179,88 +202,94 @@ class Rclone:
 
         return command_output
 
-    def lsd(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def lsd(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """lsd
 
         Wrap the rclone lsd command.
         """
         if self.json_by_default:
             command_output: RcloneOutput = self.lsjson(remote, flags)
-            return self._filterJson(command_output, True)
-        else:
-            return self.command("lsd", [remote] + flags)
+            return self._filter_json(command_output, True)
 
-    def lsl(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+        return self.command("lsd", [remote] + list(flags))
+
+    def lsl(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """lsl
 
         Wrap the rclone lsl command.
         """
 
         if self.json_by_default:
-            command_output: RcloneOutput = self.lsjson(remote, ["-R"] + flags)
-            return self._filterJson(command_output, False)
-        else:
-            return self.command("lsl", [remote] + flags)
+            command_output: RcloneOutput = self.lsjson(remote, ["-R"] + list(flags))
+            return self._filter_json(command_output, False)
 
-    def lsf(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+        return self.command("lsl", [remote] + list(flags))
+
+    def lsf(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """lsf
 
         Wrap the rclone lsf command.
         """
-        return self.command("lsf", [remote] + flags)
+        return self.command("lsf", [remote] + list(flags))
 
-    def delete(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def delete(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """delete
 
         Wrap the rclone delete command.
         """
-        return self.command("delete", [remote] + flags)
+        return self.command("delete", [remote] + list(flags))
 
-    def deletefile(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def deletefile(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """deletefile
 
         Wrap the rclone deletefile command.
         """
-        return self.command("deletefile", [remote] + flags)
+        return self.command("deletefile", [remote] + list(flags))
 
-    def purge(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def purge(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """purge
 
         Wrap the rclone purge command.
         """
-        return self.command("purge", [remote] + flags)
+        return self.command("purge", [remote] + list(flags))
 
-    def mkdir(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def mkdir(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """mkdir
 
         Wrap the rclone mkdir command.
         """
-        return self.command("mkdir", [remote] + flags)
+        return self.command("mkdir", [remote] + list(flags))
 
-    def size(self, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def size(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """size
 
         Wrap the rclone size command.
         """
-        return self.command("size", [remote] + flags)
+        return self.command("size", [remote] + list(flags))
 
-    def sync(self, local: str, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def sync(
+        self, local: str, remote: str, flags: Iterable[str] = tuple()
+    ) -> RcloneOutput:
         """sync
 
         Wrap the rclone sync command.
         """
-        return self.command("sync", [local] + [remote] + flags)
+        return self.command("sync", [local] + [remote] + list(flags))
 
-    def copy(self, local: str, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def copy(
+        self, local: str, remote: str, flags: Iterable[str] = tuple()
+    ) -> RcloneOutput:
         """copy
 
         Wrap the rclone copy command.
         """
-        return self.command("copy", [local] + [remote] + flags)
+        return self.command("copy", [local] + [remote] + list(flags))
 
-    def move(self, local: str, remote: str, flags: List[str] = []) -> RcloneOutput:
+    def move(
+        self, local: str, remote: str, flags: Iterable[str] = tuple()
+    ) -> RcloneOutput:
         """move
 
         Wrap the rclone move command.
         """
-        return self.command("move", [local] + [remote] + flags)
+        return self.command("move", [local] + [remote] + list(flags))
