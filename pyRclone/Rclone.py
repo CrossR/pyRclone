@@ -77,3 +77,16 @@ class Rclone:
         except Exception as e:
             self.logger.exception(f"Exception running {command_to_run}. Exception: {e}")
             return RcloneOutput(RcloneError.PYTHON_EXCEPTION, [""], [""])
+
+    def command(self, command: str, arguments: List[str] = []) -> RcloneOutput:
+        """command
+
+        Run a given command.
+
+        This will add on the associated rclone parts (ie, "rclone", "--conf XXX")
+        """
+
+        full_command: List[str] = ["rclone", command]
+        full_command += arguments
+
+        return self._execute(full_command)
