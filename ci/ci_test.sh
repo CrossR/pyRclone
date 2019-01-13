@@ -84,7 +84,7 @@ if [ "${FULL_TYPING:-0}" -eq 1 ]; then
     poetry run mypy --version
 
     LogMessage "Running full mypy on code base..."
-    poetry run mypy pyrclone --strict
+    poetry run mypy --config-file mypy.ini pyrclone
     RETURN_CODE=$?
     LogMessage "Finished running full mypy on code base..."
 
@@ -95,25 +95,6 @@ if [ "${FULL_TYPING:-0}" -eq 1 ]; then
         exit ${FAIL}
     else
         LogMessage "Full typing check passed!"
-    fi
-fi
-
-if [ "${BASIC_TYPING-0}" -eq 1 ]; then
-
-    poetry run mypy --version
-
-    LogMessage "Running basic mypy on code base..."
-    poetry run mypy --config-file mypy.ini pyrclone
-    RETURN_CODE=$?
-    LogMessage "Finished running basic mypy on code base..."
-
-    LogMessage "mypy returned ${RETURN_CODE}..."
-
-    if [ $RETURN_CODE -ne 0 ]; then
-        LogError "Basic typing check failed..."
-        exit ${FAIL}
-    else
-        LogMessage "Basic typing check passed!"
     fi
 fi
 

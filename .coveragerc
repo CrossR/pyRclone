@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = pyRclone
+source = pyrclone
 
 [report]
 exclude_lines =
