@@ -1,5 +1,5 @@
-# pylint: disable=too-few-public-methods
-"""rclone_config
+# pylint: disable=too-few-public-methods, C0411
+"""rclone_confi
 
 Classes to parse, load and store the configuration settings for rclone from
 a given location.

@@ -1,3 +1,4 @@
+# pylint: disable=C0411
 """rclone
 
 A typed interface for interactions with an RClone executable.
