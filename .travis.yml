@@ -1,0 +1,33 @@
+language: python
+python: 3.7
+dist: xenial
+sudo: true
+
+# Build only the master branch. PRs are handled differently, this just stops
+# building branches that are pushed.
+branches:
+  only:
+  - master
+
+matrix:
+  include:
+  - name: "Lint Code"
+    env: LINT_CODE=1
+  - name: "Basic Type Check"
+    env: BASIC_TYPING=1
+  - name: "Full Type Check"
+    env: FULL_TYPING=1
+  allow_failures:
+    - name: "Full Type Check"
+
+cache:
+  pip: true
+  directories:
+    - $HOME/.cache/pypoetry
+
+install:
+  - pip install poetry codecov
+  - poetry install
+
+script:
+  - ci/ci_test.sh
