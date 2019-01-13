@@ -188,3 +188,150 @@ class rcloneTest(unittest.TestCase):
         assert result.error == expected_result.error
         assert result.output == expected_result.output
         assert result.return_code == expected_result.return_code
+
+    def test_deletefile(self) -> None:
+        self.mock_return = b""
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.deletefile("dropbox:Test1.txt")
+
+        expected_result = RcloneOutput(RcloneError.SUCCESS, [], [])
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "deletefile",
+            "dropbox:Test1.txt",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
+
+    def test_purge(self) -> None:
+        self.mock_return = b""
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.purge("dropbox:TestFolder")
+
+        expected_result = RcloneOutput(RcloneError.SUCCESS, [], [])
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "purge",
+            "dropbox:TestFolder",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
+
+    def test_mkdir(self) -> None:
+        self.mock_return = b""
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.mkdir("dropbox:TestFolderNew")
+
+        expected_result = RcloneOutput(RcloneError.SUCCESS, [], [])
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "mkdir",
+            "dropbox:TestFolderNew",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
+
+    def test_size(self) -> None:
+        self.mock_return = b"Total objects: 3\nTotal size: 0 Bytes (0 Bytes)\n"
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.size("dropbox:TestFolder")
+
+        expected_result = RcloneOutput(
+            RcloneError.SUCCESS,
+            ["Total objects: 3", "Total size: 0 Bytes (0 Bytes)"],
+            [],
+        )
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "size",
+            "dropbox:TestFolder",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
+
+    def test_sync(self) -> None:
+        self.mock_return = b""
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.sync("dropbox:Test1/", "dropbox:Test2/")
+
+        expected_result = RcloneOutput(RcloneError.SUCCESS, [], [])
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "sync",
+            "dropbox:Test1/",
+            "dropbox:Test2/",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
+
+    def test_copy(self) -> None:
+        self.mock_return = b""
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.copy("dropbox:Test1.txt", "dropbox:TestFolder/")
+
+        expected_result = RcloneOutput(RcloneError.SUCCESS, [], [])
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "copy",
+            "dropbox:Test1.txt",
+            "dropbox:TestFolder/",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
+
+    def test_move(self) -> None:
+        self.mock_return = b""
+        self.mock_error = b""
+
+        with mock.patch("subprocess.Popen", self.process_mock):
+            self.rclone.dry_run_mode = False
+            result = self.rclone.move("dropbox:TestFolder", "dropbox:TestFolderNew")
+
+        expected_result = RcloneOutput(RcloneError.SUCCESS, [], [])
+
+        # Assert is split so in the case of a failure, its easier to see.
+        assert self.last_mock_process.command == [
+            "rclone",
+            "move",
+            "dropbox:TestFolder",
+            "dropbox:TestFolderNew",
+        ]
+        assert result.error == expected_result.error
+        assert result.output == expected_result.output
+        assert result.return_code == expected_result.return_code
