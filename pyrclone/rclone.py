@@ -156,7 +156,7 @@ class Rclone:
         Run a given command in dry run mode, ie a trial mode with no actual changes.
         """
 
-        return self.command(command, ["--dry-run"] + list(arguments))
+        return self.run_command(command, ["--dry-run"] + list(arguments))
 
     def lsjson(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
         """lsjson
