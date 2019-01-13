@@ -1,2 +1,2 @@
 # pylint: disable=all
-from .rclone import Rclone
+from .rclone import Rclone, RcloneConfig, RcloneError, RcloneOutput
