@@ -1,14 +1,29 @@
 import logging
 import subprocess
-from typing import List, Optional
 from dataclasses import dataclass
+from enum import Enum
+from typing import List, Optional
 
 from .RcloneConfig import RcloneConfig
 
 
+class RcloneError(Enum):
+    RCLONE_MISSING = -1
+    PYTHON_EXCEPTION = -2
+    SUCCESS = 0
+    SYNTAX_OR_USAGE_ERROR = 1
+    UNCATEGORISED = 2
+    FOLDER_NOT_FOUND = 3
+    FILE_NOT_FOUND = 4
+    RETRY_ERROR = 5
+    NO_RETRY_ERROR = 6
+    FATAL_ERROR = 7
+    TRANSFER_EXCEEDED = 8
+
+
 @dataclass
 class RcloneOutput:
-    return_code: int
+    return_code: RcloneError
     output: List[str]
     error: List[str]
 
@@ -52,13 +67,13 @@ class Rclone:
                     self.logger.warning(error.decode("utf-8").replace("\\n", "\n"))
 
                 return RcloneOutput(
-                    return_code=rclone_process.returncode,
-                    output=output.splitlines(),
-                    error=error.decode("utf-8").splitlines(),
+                    RcloneError(rclone_process.returncode),
+                    output.splitlines(),
+                    error.decode("utf-8").splitlines(),
                 )
         except FileNotFoundError as e:
             self.logger.exception(f"Can't find rclone executable. {e}")
-            return RcloneOutput(return_code=-2, output=[""], error=[""])
+            return RcloneOutput(RcloneError.RCLONE_MISSING, [""], [""])
         except Exception as e:
             self.logger.exception(f"Exception running {command_to_run}. Exception: {e}")
-            return RcloneOutput(return_code=-2, output=[""], error=[""])
+            return RcloneOutput(RcloneError.PYTHON_EXCEPTION, [""], [""])
