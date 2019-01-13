@@ -26,11 +26,11 @@ if [ "${LINT_CODE:-0}" -eq 1 ]; then
     poetry run black --version
 
     LogMessage "Running full lint of code..."
-    poetry run pylint pyRclone
+    poetry run pylint pyrclone
     LogMessage "Finished running full lint of code..."
 
     LogMessage "Linting code ignoring TODO warnings..."
-    poetry run pylint pyRclone -d W0511
+    poetry run pylint pyrclone -d W0511
     RETURN_CODE=$?
     LogMessage "Finished running second lint of code..."
 
@@ -42,7 +42,7 @@ if [ "${LINT_CODE:-0}" -eq 1 ]; then
     fi
 
     LogMessage "Running black on main source..."
-    poetry run black pyRclone --check
+    poetry run black pyrclone --check
     RETURN_CODE=$?
     LogMessage "Finished running black on main source..."
 
@@ -83,7 +83,7 @@ if [ "${FULL_TYPING:-0}" -eq 1 ]; then
     poetry run mypy --version
 
     LogMessage "Running full mypy on code base..."
-    poetry run mypy pyRclone --strict
+    poetry run mypy pyrclone --strict
     RETURN_CODE=$?
     LogMessage "Finished running full mypy on code base..."
 
@@ -102,7 +102,7 @@ if [ "${BASIC_TYPING-0}" -eq 1 ]; then
     poetry run mypy --version
 
     LogMessage "Running basic mypy on code base..."
-    poetry run mypy --config-file mypy.ini pyRclone
+    poetry run mypy --config-file mypy.ini pyrclone
     RETURN_CODE=$?
     LogMessage "Finished running basic mypy on code base..."
 

@@ -17,8 +17,6 @@ matrix:
     env: BASIC_TYPING=1
   - name: "Full Type Check"
     env: FULL_TYPING=1
-  allow_failures:
-    - name: "Full Type Check"
 
 cache:
   pip: true
