@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "rclone_viewer"
+name = "pyRclone"
 version = "0.0.1"
-description = "A Rclone GUI written in Python."
+description = "pyRclone"
 authors = ["Ryan C <r.cross@lancaster.ac.uk>"]
 license = "GPL-3.0"
 

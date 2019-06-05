@@ -1,1 +1,3 @@
-# rclone_viewer
+# pyRclone
+
+A typed rClone interface for python.
