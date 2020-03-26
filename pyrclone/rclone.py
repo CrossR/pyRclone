@@ -132,9 +132,7 @@ class Rclone:
 
         return self.run_command(command, arguments)
 
-    def run_command(
-        self, command: str, arguments: List[str] = tuple()
-    ) -> RcloneOutput:
+    def run_command(self, command: str, arguments: List[str] = tuple()) -> RcloneOutput:
         """run_command
 
         Run a given command.
@@ -274,27 +272,21 @@ class Rclone:
         """
         return self.command("size", [remote] + list(flags))
 
-    def sync(
-        self, local: str, remote: str, flags: List[str] = tuple()
-    ) -> RcloneOutput:
+    def sync(self, local: str, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """sync
 
         Wrap the rclone sync command.
         """
         return self.command("sync", [local] + [remote] + list(flags))
 
-    def copy(
-        self, local: str, remote: str, flags: List[str] = tuple()
-    ) -> RcloneOutput:
+    def copy(self, local: str, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """copy
 
         Wrap the rclone copy command.
         """
         return self.command("copy", [local] + [remote] + list(flags))
 
-    def move(
-        self, local: str, remote: str, flags: List[str] = tuple()
-    ) -> RcloneOutput:
+    def move(self, local: str, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """move
 
         Wrap the rclone move command.
