@@ -57,7 +57,7 @@ class Rclone:
         if config is None:
             self.config: RcloneConfig = RcloneConfig.get_default_config()
         else:
-            self.config: RcloneConfig = config
+            self.config = config
 
         # All ls (except lsf) commands are done in terms of lsjson with flags
         # added to make their behaviour consistent with the normal command.
