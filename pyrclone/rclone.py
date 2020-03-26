@@ -69,6 +69,9 @@ class Rclone:
         # their arguments to prevent any accidents.
         self.dry_run_mode: bool = False
 
+        # When in verbose mode, all commands are ran with "-vvv".
+        self.verbose_mode: bool = True
+
     def listremotes(self) -> List[str]:
         """listremotes
 
@@ -142,6 +145,9 @@ class Rclone:
         if self.dry_run_mode and "--dry-run" not in arguments:
             self.logger.warning("Attempted to run non-trial command in dry-run mode.")
             return RcloneOutput(RcloneError.PYTHON_EXCEPTION, [""], [""])
+
+        if self.verbose_mode and "-vvv" not in arguments:
+            arguments += ["-vvv"]
 
         full_command: List[str] = ["rclone", command]
         full_command += arguments
