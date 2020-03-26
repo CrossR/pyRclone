@@ -8,7 +8,7 @@ import logging
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
-from typing import Iterable, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from .rclone_config import RcloneConfig
 
@@ -70,7 +70,7 @@ class Rclone:
         self.dry_run_mode: bool = False
 
         # When in verbose mode, all commands are ran with "-vvv".
-        self.verbose_mode: bool = True
+        self.verbose_mode: bool = False
 
     def listremotes(self) -> List[str]:
         """listremotes
@@ -120,7 +120,7 @@ class Rclone:
             )
             return RcloneOutput(RcloneError.PYTHON_EXCEPTION, [""], [""])
 
-    def command(self, command: str, arguments: Iterable[str] = tuple()) -> RcloneOutput:
+    def command(self, command: str, arguments: List[str] = tuple()) -> RcloneOutput:
         """command
 
         Run a given command in the correct mode.
@@ -133,7 +133,7 @@ class Rclone:
         return self.run_command(command, arguments)
 
     def run_command(
-        self, command: str, arguments: Iterable[str] = tuple()
+        self, command: str, arguments: List[str] = tuple()
     ) -> RcloneOutput:
         """run_command
 
@@ -155,7 +155,7 @@ class Rclone:
         return self._execute(full_command)
 
     def dry_run_command(
-        self, command: str, arguments: Iterable[str] = tuple()
+        self, command: str, arguments: List[str] = tuple()
     ) -> RcloneOutput:
         """dry_run_command
 
@@ -164,7 +164,7 @@ class Rclone:
 
         return self.run_command(command, ["--dry-run"] + list(arguments))
 
-    def lsjson(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def lsjson(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """lsjson
 
         Wrap the rclone lsjson command.
@@ -172,7 +172,7 @@ class Rclone:
         return self.command("lsjson", [remote] + list(flags) + ["--fast-list"])
 
     def ls(  # pylint: disable=C0103
-        self, remote: str, flags: Iterable[str] = tuple()
+        self, remote: str, flags: List[str] = tuple()
     ) -> RcloneOutput:
         """ls
 
@@ -209,7 +209,7 @@ class Rclone:
 
         return command_output
 
-    def lsd(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def lsd(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """lsd
 
         Wrap the rclone lsd command.
@@ -220,7 +220,7 @@ class Rclone:
 
         return self.command("lsd", [remote] + list(flags))
 
-    def lsl(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def lsl(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """lsl
 
         Wrap the rclone lsl command.
@@ -232,42 +232,42 @@ class Rclone:
 
         return self.command("lsl", [remote] + list(flags))
 
-    def lsf(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def lsf(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """lsf
 
         Wrap the rclone lsf command.
         """
         return self.command("lsf", [remote] + list(flags))
 
-    def delete(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def delete(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """delete
 
         Wrap the rclone delete command.
         """
         return self.command("delete", [remote] + list(flags))
 
-    def deletefile(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def deletefile(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """deletefile
 
         Wrap the rclone deletefile command.
         """
         return self.command("deletefile", [remote] + list(flags))
 
-    def purge(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def purge(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """purge
 
         Wrap the rclone purge command.
         """
         return self.command("purge", [remote] + list(flags))
 
-    def mkdir(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def mkdir(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """mkdir
 
         Wrap the rclone mkdir command.
         """
         return self.command("mkdir", [remote] + list(flags))
 
-    def size(self, remote: str, flags: Iterable[str] = tuple()) -> RcloneOutput:
+    def size(self, remote: str, flags: List[str] = tuple()) -> RcloneOutput:
         """size
 
         Wrap the rclone size command.
@@ -275,7 +275,7 @@ class Rclone:
         return self.command("size", [remote] + list(flags))
 
     def sync(
-        self, local: str, remote: str, flags: Iterable[str] = tuple()
+        self, local: str, remote: str, flags: List[str] = tuple()
     ) -> RcloneOutput:
         """sync
 
@@ -284,7 +284,7 @@ class Rclone:
         return self.command("sync", [local] + [remote] + list(flags))
 
     def copy(
-        self, local: str, remote: str, flags: Iterable[str] = tuple()
+        self, local: str, remote: str, flags: List[str] = tuple()
     ) -> RcloneOutput:
         """copy
 
@@ -293,7 +293,7 @@ class Rclone:
         return self.command("copy", [local] + [remote] + list(flags))
 
     def move(
-        self, local: str, remote: str, flags: Iterable[str] = tuple()
+        self, local: str, remote: str, flags: List[str] = tuple()
     ) -> RcloneOutput:
         """move
 

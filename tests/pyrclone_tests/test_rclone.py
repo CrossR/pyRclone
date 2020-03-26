@@ -91,7 +91,7 @@ class rcloneTest(unittest.TestCase):
         )
 
         # Assert is split so in the case of a failure, its easier to see.
-        assert self.last_mock_process.command == ["rclone", "lsjson", "dropbox:", "-R"]
+        assert self.last_mock_process.command == ["rclone", "lsjson", "dropbox:", "-R", "--fast-list"]
         assert result.error == expected_result.error
         assert result.output == expected_result.output
         assert result.return_code == expected_result.return_code
@@ -105,7 +105,7 @@ class rcloneTest(unittest.TestCase):
         )
 
         # Assert is split so in the case of a failure, its easier to see.
-        assert self.last_mock_process.command == ["rclone", "lsjson", "dropbox:"]
+        assert self.last_mock_process.command == ["rclone", "lsjson", "dropbox:", "--fast-list"]
         assert result.error == expected_result.error
         assert result.output == expected_result.output
         assert result.return_code == expected_result.return_code
@@ -119,7 +119,7 @@ class rcloneTest(unittest.TestCase):
         )
 
         # Assert is split so in the case of a failure, its easier to see.
-        assert self.last_mock_process.command == ["rclone", "lsjson", "dropbox:", "-R"]
+        assert self.last_mock_process.command == ["rclone", "lsjson", "dropbox:", "-R", "--fast-list"]
         assert result.error == expected_result.error
         assert result.output == expected_result.output
         assert result.return_code == expected_result.return_code
