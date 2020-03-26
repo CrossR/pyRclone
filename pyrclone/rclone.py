@@ -169,7 +169,7 @@ class Rclone:
 
         Wrap the rclone lsjson command.
         """
-        return self.command("lsjson", [remote] + list(flags))
+        return self.command("lsjson", [remote] + list(flags) + ["--fast-list"])
 
     def ls(  # pylint: disable=C0103
         self, remote: str, flags: Iterable[str] = tuple()
