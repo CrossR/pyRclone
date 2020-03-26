@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "pyRclone"
-version = "1.0.0"
-description = "pyRclone"
+version = "1.0.1"
+description = "A typed interface for rclone."
 authors = ["Ryan C <r.cross@lancaster.ac.uk>"]
 license = "GPL-3.0"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.6"
