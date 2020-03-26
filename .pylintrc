@@ -139,6 +139,7 @@ disable=print-statement,
         deprecated-sys-function,
         exception-escape,
         comprehension-escape,
+        logging-format-interpolation,
         C0330,
         W1203,
         W0703
