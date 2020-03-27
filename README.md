@@ -46,14 +46,10 @@ def main():
         print(rclone_output.error)
         return
 
-    backup_folders = []
-    for folder in json.loads("".join(rclone_output.output)):
-        backup_folders.append(f"{remote_path}/{folder['Path']}")
-
     # lsd (and all other ls commands) will default to using lsjson.
     # Lets decode the JSON, and get a list of all our folders.
     backup_folders = []
-    for folder in json.loads("".join(files)):
+    for folder in json.loads("".join(rclone_output.output)):
         backup_folders.append(f"{remote_path}/{folder['Path']}")
 
     # With our list of folders, lets delete every other folder, excluding these
