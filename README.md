@@ -17,7 +17,7 @@ import logging
 import os
 import sys
 
-from pyrclone import Rclone, RcloneError
+from pyrclone import Rclone, RcloneError, RcloneOutput
 
 
 def main():
@@ -39,12 +39,16 @@ def main():
 
     # List all folders in backup directory to iterate over them.
     remote_path: str = "drive:PC/Backups"
-    output = rclone.lsd(remote_path)
+    rclone_output: RcloneOutput = rclone.lsd(remote_path)
 
     # If we failed to run, stop.
-    if output.return_code is not RcloneError.SUCCESS:
-        print(output.error)
+    if rclone_output.return_code is not RcloneError.SUCCESS:
+        print(rclone_output.error)
         return
+
+    backup_folders = []
+    for folder in json.loads("".join(rclone_output.output)):
+        backup_folders.append(f"{remote_path}/{folder['Path']}")
 
     # lsd (and all other ls commands) will default to using lsjson.
     # Lets decode the JSON, and get a list of all our folders.
